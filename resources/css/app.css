@@ -2,8 +2,65 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-primer: #3D5AFE;
+  --color-primer-cerah: #4A6FFF;
+  --color-generate: #222831;
+  --color-premium: #FFCB56;
+  --color-teks: #1E2430;
+  --color-latar: #F5F7FF;
+  --color-permukaan: #FFFFFF;
+  --color-teks-sekunder: #607183;
+  --color-garis: #D7E1E8;
+  --color-nonaktif-latar: #E2E8F0;
+  --color-sukses-teks: #15803D;
+  --color-sukses-garis: #BBF7D0;
+  --color-galat-teks: #B91C1C;
+  --color-galat-garis: #FEBCBC;
+
+  --radius-kartu: 14px;
+  --radius-tombol: 12px;
+  --radius-pil: 16px;
+  --radius-modal: 16px;
+
+  --spacing-xs: 8px;
+  --spacing-s: 12px;
+  --spacing-m: 16px;
+  --spacing-l: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
 }
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: var(--color-latar);
+    color: var(--color-teks);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+/*
+ * Layer komponen dan utilitas dipindahkan ke resources/css/landing.css
+ * agar gaya khusus halaman landing terpisah dari token desain.
+ */

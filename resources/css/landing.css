@@ -1,0 +1,86 @@
+/*
+ * Gaya khusus halaman landing KuesiGen.
+ *
+ * Berkas ini dimuat terpisah dari app.css. Directive @reference dipakai agar
+ * utilitas dan token tema yang didefinisikan di app.css dapat dipakai lewat
+ * @apply tanpa menggandakan keluaran Tailwind.
+ */
+@reference './app.css';
+
+@source './app.css';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+
+@keyframes kuesigen-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kuesigen-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  .btn-primer {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium text-white rounded-tombol bg-primer transition-colors hover:bg-primer-cerah focus:outline-none focus:ring-2 focus:ring-primer focus:ring-offset-2;
+  }
+
+  .btn-sekunder {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium text-teks rounded-tombol bg-permukaan border border-garis transition-colors hover:bg-nonaktif-latar focus:outline-none focus:ring-2 focus:ring-primer focus:ring-offset-2;
+  }
+
+  .btn-generate {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-medium text-permukaan rounded-tombol bg-generate transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-generate focus:ring-offset-2;
+  }
+
+  .btn-premium {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-base font-semibold text-teks rounded-tombol bg-premium transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-premium focus:ring-offset-2;
+  }
+
+  .kartu {
+    @apply bg-permukaan rounded-kartu shadow-sm border border-garis;
+  }
+
+  .kartu-hover {
+    @apply bg-permukaan rounded-kartu shadow-sm border border-garis transition-shadow hover:shadow-md;
+  }
+
+  .container-landing {
+    @apply max-w-[1344px] mx-auto px-6 lg:px-8;
+  }
+
+  .section-py {
+    @apply py-16 lg:py-24;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: kuesigen-fade-in 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: kuesigen-slide-up 0.6s ease-out forwards;
+  }
+}
+
+/* Hormati preferensi pengguna yang mematikan animasi. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none;
+  }
+}
