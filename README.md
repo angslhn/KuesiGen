@@ -26,7 +26,7 @@ KuesiGen memangkas tiga langkah paling lambat saat menyusun instrumen penelitian
 
 ## Fitur Utama
 
-### Area Pengguna (Next.js App Router → Laravel Routes)
+### Area Pengguna (Laravel Routes)
 
 | Halaman | Deskripsi |
 |---------|-----------|
@@ -36,7 +36,7 @@ KuesiGen memangkas tiga langkah paling lambat saat menyusun instrumen penelitian
 | **Dasbor** (`/dasbor`) | Sapaan, kartu kuota bulanan (sisa Free / terpakai Premium + sisa harian), tombol "Buat Kuesioner Baru", daftar kuesioner terakhir. |
 | **Buat Kuesioner** (wizard) | **Pilihan instrumen → Jenis → Topik → Variabel → Profil pembuat → Proses → Pratinjau**. Instrumen menentukan jenis jawaban & apakah langkah variabel muncul (hanya kuantitatif). Topik max 200 kata. Variabel & profil = Premium. Validasi anggaran pertanyaan per variabel. Penolakan di luar lingkup (kode, esai, target orang) → "Topik Di Luar Lingkup" tanpa memakai kuota. |
 | **Surat Pembuka & Instrumen** | Ditulis model sesuai peran pembuat. Demografi di seksi pertama (Akademis: + kriteria responden & pernyataan kesediaan). Pertanyaan dikelompokkan per variabel (kuantitatif). Perkiraan waktu dihitung aplikasi, bukan model. |
-| **Proses** | Indikator berjalan (Server Action). Tidak ada timer/tahap rekaan. Gagal → tombol kontekstual: "Coba lagi", "Ganti topik", "Perbaiki isian". Batal sengaja tidak ada (request sudah terkirim). |
+| **Proses** | Indikator berjalan (Livewire component / AJAX). Tidak ada timer/tahap rekaan. Gagal → tombol kontekstual: "Coba lagi", "Ganti topik", "Perbaiki isian". Batal sengaja tidak ada (request sudah terkirim). |
 | **Pratinjau** | Ringkasan topik, jumlah pertanyaan, surat pembuka, bagian instrumen, variabel. |
 | **Hasil** | Kotak tautan Google Form (ikon salin menempel), aksi "Terbitkan ke Drive"/"Buka Google Form" & "Contoh data responden" (Premium: 10–200 kelipatan 10, `.xlsx` siap SPSS/SmartPLS). Banner opsional (galeri admin / unggah sendiri, JPG/PNG ≤3 MB). Terbit ulang tanpa modal. |
 | **Riwayat** (`/riwayat`) | Daftar draf: judul, jumlah pertanyaan, status (Draf/Siap dibagikan/Terbit), waktu update. Keadaan kosong informatif. |
@@ -48,7 +48,7 @@ KuesiGen memangkas tiga langkah paling lambat saat menyusun instrumen penelitian
 
 | Halaman | Deskripsi |
 |---------|-----------|
-| **Masuk Admin** (`/admin/masuk`) | Email + kata sandi. Shell: top bar (logo, judul, notifikasi, avatar) + sidebar 264px kategori (UTAMA, PENGGUNA, KUESIONER, SISTEM, STATISTIK). Hanya desktop — mobile menampilkan pemberitahuan. Shell `h-screen overflow-hidden`, hanya `<main>` yang bergulir. |
+| **Masuk Admin** (`/admin/masuk`) | Email + kata sandi. Layout: top bar (logo, judul, notifikasi, avatar) + sidebar 264px kategori (UTAMA, PENGGUNA, KUESIONER, SISTEM, STATISTIK). Hanya desktop — mobile menampilkan pemberitahuan. Shell full-height, hanya content area yang scroll. |
 | **Ringkasan** | Total pengguna (bukan admin), kuesioner terbit, permintaan LLM, token bulan ini + daftar kuesioner terbaru. |
 | **Pengguna** | Daftar + pencarian, paket + masa berlaku, jumlah kuesioner, terakhir aktif. Ekspor CSV (max 100 baris). Aksi: Aktifkan/Atur Premium (Selamanya / Sampai tanggal WIB), nonaktifkan (konfirmasi), turun ke Free otomatis lewat tanggal. Akun admin tidak tampil. |
 | **Kuesioner** | Semua kuesioner lintas pemilik: status (Draf/Siap dibagikan/Terbit), pemilik. |
@@ -56,30 +56,29 @@ KuesiGen memangkas tiga langkah paling lambat saat menyusun instrumen penelitian
 | **Kuota API & LLM** | Pemakaian bulan ini, sisa kuota paket, daftar penyedia LLM + terakhir pakai. CRUD penyedia (tes, ubah nama/model/endpoint/batas menit/kunci API via dialog, aktif/nonaktif, hapus). Kunci tersimpan terenkripsi, rotasi per menit. |
 | **Galeri Banner** | Unggah JPG/PNG ≤3 MB, atur status aktif, lihat ukuran, aktif/nonaktif/hapus. Hanya galeri admin (banner personal user tidak tampil di sini). |
 | **Analitik Penggunaan** | Generate, pengguna aktif, token LLM, Forms dibuat. Grafik harian, komposisi paket, fitur populer. Waktu WIB. |
-| **Pemakaian Harian** (`/admin/harian`) | Generate hari ini: jumlah, distribusi per jam (WIB), pemakaian per user vs batas harian, penanda penuh. Baca dari `daily_usage` (sama yg blokir generate). |
+| **Pemakaian Harian** (`/admin/harian`) | Generate hari ini: jumlah, distribusi per jam (WIB), pemakaian per user vs batas harian, penanda penuh. Baca dari `daily_usage` (sama yang blokir generate). |
 | **Pengaturan** | Zona waktu operasional (`Asia/Jakarta`), penyedia aktif. |
 | **Paket & Harga** | Editor harga, kuota bulanan, batas kuesioner/hari, batas pertanyaan, izin fitur, sakelar "pilihan jenis kuesioner" (kuantitatif/kualitatif). Dibaca database, bukan hardcode. |
 
 ---
 
-## Tech Stack (Laravel Implementation)
+## Tech Stack (Laravel)
 
 | Layer | Teknologi |
 |-------|-----------|
 | **Framework** | Laravel 13.x (PHP 8.3+) |
 | **Frontend** | Vite 8, Tailwind CSS v4, laravel-vite-plugin |
+| **Reactive UI** | Livewire 3 (wizard, proses generate, admin panels) |
 | **Database** | SQLite (dev) / PostgreSQL (prod) |
 | **Auth** | Laravel Socialite (Google OAuth) + JWT sesi (cookie httpOnly) |
 | **Storage** | Cloudinary (banner & avatar) |
-| **Excel Export** | `maatwebsite/excel` atau `box/spout` (contoh data responden `.xlsx`) |
-| **Queue/Jobs** | Cron job penurunan paket (`plan-expiry`) + email Resend |
-| **Font** | Plus Jakarta Sans (Bunny Fonts) |
+| **Excel Export** | `maatwebsite/excel` (contoh data responden `.xlsx`) |
+| **Queue/Jobs** | Laravel Scheduler + Queue (penurunan paket `plan-expiry` + email Resend) |
+| **Font** | Plus Jakarta Sans (Bunny Fonts via `@font-face`) |
 | **Icons** | Lucide (Blade components) + SVG merek |
 | **Animasi** | CSS `@keyframes` (slide-up 300ms, stagger 60ms, reduced-motion) |
 | **Lint/Format** | Laravel Pint (PHP), ESLint + Prettier (JS/CSS) |
 | **Git Hooks** | Husky + lint-staged |
-
-> **Catatan:** Implementasi asli pakai **Next.js 16 (App Router) + TypeScript + React 19**. Repo Laravel ini adalah *mirror* untuk keperluan presentasi/demo — logika bisnis, skema DB, dan alur identik.
 
 ---
 
@@ -93,28 +92,31 @@ kuesigen/
 │   │   │   ├── Auth/           # Google OAuth, session, admin login
 │   │   │   ├── User/           # Dashboard, Questionnaire wizard, History, Settings, Report
 │   │   │   └── Admin/          # Admin panel controllers
+│   │   ├── Livewire/           # Livewire components (wizard steps, admin tables, modals)
 │   │   ├── Middleware/         # Role guard, session verification, proxy
 │   │   └── Requests/           # Form requests (validation)
 │   ├── Models/                 # User, Questionnaire, Plan, LLMProvider, Banner, Report, DailyUsage, Audit
 │   ├── Services/               # Domain logic: Auth, Questionnaire, Plan, Admin, Media, LLM, Report
-│   ├── Actions/                # Server Actions equiv: GenerateQuestionnaire, PublishToDrive, SetUserPlan, etc.
-│   └── Helpers/                # plan.ts, contact.ts, adminRoute.ts, toast.ts, user.ts, datetime.ts
+│   ├── Actions/                # Single-action classes: GenerateQuestionnaire, PublishToDrive, SetUserPlan, etc.
+│   ├── Jobs/                   # Queue jobs: SendSubscriptionEmail, ProcessPlanExpiry, GenerateSampleData
+│   └── Helpers/                # plan.php, contact.php, adminRoute.php, toast.php, user.php, datetime.php
 ├── database/
 │   ├── migrations/             # Schema: users, questionnaires, plans, plan_features, llm_providers, banners, reports, daily_usage, audits
-│   ├── seeders/                # Plan seeder (Free/Premium initial)
+│   ├── seeders/                # PlanSeeder (Free/Premium initial), AdminSeeder
 │   └── schema.sql              # Referensi PostgreSQL (source of truth)
 ├── resources/
 │   ├── views/
 │   │   ├── layouts/            # app.blade.php, admin.blade.php, guest.blade.php
+│   │   ├── livewire/           # Livewire component views
 │   │   ├── user/               # dashboard, questionnaire wizard, history, settings, report, plans
 │   │   ├── admin/              # admin panel pages
-│   │   ├── auth/               # login, register (Google)
+│   │   ├── auth/               # login (Google)
 │   │   ├── components/         # Blade components (Button, Input, Modal, Toast, Badge, Card, StatCard, etc.)
 │   │   └── welcome.blade.php   # Landing page (hero, fitur, paket, CTA, footer)
 │   ├── css/
-│   │   ├── app.css             # @tailwind + @theme (tokens dari PROJECT.md)
+│   │   ├── app.css             # @tailwind + @theme (tokens dari design system)
 │   │   └── landing.css         # @reference app.css + komponen landing
-│   └── js/app.js               # Alpine.js / vanilla: mobile nav, toast, modal, avatar crop
+│   └── js/app.js               # Alpine.js: mobile nav, toast, modal, avatar crop
 ├── routes/
 │   ├── web.php                 # User routes (/, /masuk, /dasbor, /kuesioner/*, /riwayat, /paket, /pengaturan, /laporan)
 │   ├── admin.php               # Admin routes (/admin/*)
@@ -124,12 +126,12 @@ kuesigen/
 │   ├── plans.php               # Plan features map (dibaca dari DB, fallback ke config)
 │   └── services.php            # Google, Cloudinary, Resend
 ├── public/
-│   ├── icons/kuesigen.svg      # Logo merek (JSX di Next.js → SVG di Blade)
+│   ├── icons/kuesigen.svg      # Logo merek
 │   └── build/                  # Vite output (manifest.json, assets)
 ├── docs/
 │   └── landing_page.png        # Screenshot landing page
 ├── storage/
-│   └── app/                    # Temporary files
+│   └── app/                    # Temporary files (sample data exports)
 ├── tests/
 │   ├── Feature/                # HTTP tests (user flow, admin, auth)
 │   └── Unit/                   # Service/Action tests
@@ -142,9 +144,9 @@ kuesigen/
 
 ---
 
-## Design System (dari `PROJECT.md` & Figma)
+## Design System (dari Figma & PROJECT.md)
 
-### Palet Warna (Tailwind `@theme`)
+### Palet Warna (Tailwind `@theme` di `resources/css/app.css`)
 
 | Token | Hex | Peran |
 |-------|-----|-------|
@@ -174,17 +176,17 @@ kuesigen/
 
 ### Tipografi
 
-- **Font:** Plus Jakarta Sans (Bold, SemiBold, Medium)
+- **Font:** Plus Jakarta Sans (Bold, SemiBold, Medium) — di-load via `@font-face` di `app.css`
 - **Wordmark "KuesiGen":** Extrabold (800), "Kuesi" `#3D5AFE` + "Gen" `#2B4993`
 - **Skala utama:** Hero 48/28, Judul halaman 34, Harga 40, Kartu besar 24, Modal 20, Seksi 18, Body/Tombol 16, UI/Nav 15, Caption 13, Sidebar label 12 ALL CAPS, StatCard 22 Bold
 
-### Motion
+### Motion (CSS-only, di `landing.css`)
 
 - **Enter:** 300ms (fade + naik 12px)
 - **Stagger:** 60ms antar elemen
 - **Hover/Tap:** 150ms
 - **Toast auto-close:** 4500ms
-- **Reduced-motion:** fade only, no transform
+- **Reduced-motion:** fade only, no transform (`@media (prefers-reduced-motion: reduce)`)
 
 ---
 
@@ -308,7 +310,8 @@ php artisan kuesigen:admin:create --email=admin@domain.com --password=rahasia123
 php artisan kuesigen:admin:delete --email=admin@domain.com
 # Flag --prod untuk database produksi (baca .env.production.local → .env.production → .env)
 
-# Cron (jadwalkan di server: harian 00:00 WIB)
+# Queue & Scheduler
+php artisan queue:work --sleep=3 --tries=3
 php artisan schedule:run  # Menjalankan job plan-expiry (turunkan paket + email)
 ```
 
@@ -322,7 +325,7 @@ php artisan schedule:run  # Menjalankan job plan-expiry (turunkan paket + email)
 3. **Tulis Topik** (≤200 kata) + **Jumlah Pertanyaan** (kuantitatif = anggaran pembagian variabel)
 4. **Variabel** (Premium) → Bebas X1–Xn, Terikat Y1–Yn, nama masing-masing. Bagi rata otomatis.
 5. **Profil Pembuat** (Premium, opsional) → Peran (Mahasiswa/Dosen/Peneliti/Umum) + field per peran → konteks surat pembuka.
-6. **Proses** → Server Action generate (tanpa timer). Gagal → tombol kontekstual. Penolakan di luar lingkup → tidak makan kuota.
+6. **Proses** → Livewire component / Job generate (tanpa timer). Gagal → tombol kontekstual. Penolakan di luar lingkup → tidak makan kuota.
 7. **Pratinjau** → Ringkasan, surat, bagian, variabel.
 8. **Hasil** → Tautan Google Form (salin), **Terbitkan ke Drive** (modal 5 detik pertama kali), **Contoh Data Responden** (Premium, `.xlsx`).
 9. **Banner Opsional** → Pilih galeri admin / unggah sendiri (≤3 MB, JPG/PNG) sebelum terbit.
@@ -340,37 +343,35 @@ php artisan schedule:run  # Menjalankan job plan-expiry (turunkan paket + email)
 | Prioritas antrean | ❌ | ✅ |
 | Harga | Gratis | Rp20.000/bln (awal, disesuaikan admin) |
 
-> Batas harian 20 adalah pagar anti-penyalahgunaan — Premium juga kena. Tidak ditampilkan di UI (hanya kuota bulanan). Dikenakan di `services/generation.ts` (Next.js) / `Actions/GenerateQuestionnaire.php` (Laravel).
+> Batas harian 20 adalah pagar anti-penyalahgunaan — Premium juga kena. Tidak ditampilkan di UI (hanya kuota bulanan). Dikenakan di `Actions/GenerateQuestionnaire.php` (Laravel).
 
 ### Berlangganan
 - **Tidak ada payment gateway.** Tombol upgrade → WhatsApp pemilik (`0831-6928-6490`).
 - Admin aktifkan Premium lewat `/admin/pengguna` → dialog "Aktifkan/Atur Premium" (Selamanya / Sampai tanggal WIB).
-- Penurunan otomatis lewat cron `plan-expiry` (harian 00:00 WIB) + email Resend.
+- Penurunan otomatis lewat scheduled job `plan-expiry` (harian 00:00 WIB) + email Resend.
 
 ### Email Transaksional (Resend)
 1. Aktivasi/perpanjangan → "Terima kasih telah berlangganan Premium"
 2. Penghentian admin → "Langganan Premium dihentikan"
 3. Masa lewat (cron) → "Masa Premium telah berakhir" (turun ke Free dulu, baru kirim email)
-4. Payment gateway → template siap (`templates/subscriptionPayment`), belum dipakai.
+4. Payment gateway → template siap, belum dipakai.
 
 ---
 
 ## Deployment (Produksi)
 
-Target: **Vercel** (Next.js asli) / **VPS + Nginx + PHP-FPM** (Laravel).
+Target: **VPS + Nginx + PHP-FPM** (Laravel).
 
 ### Laravel ke VPS
 1. Server: Ubuntu 24.04, PHP 8.3 + extensions (pdo_pgsql, gd, zip, bcmath, intl), Nginx, PostgreSQL 16, Node 20+, Redis (queue).
 2. Clone repo, `composer install --optimize-autoloader --no-dev`, `npm run build`.
 3. `.env` production: `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://kuesigen.site`, `DB_CONNECTION=pgsql`, `DATABASE_URL=...`, secrets dari generator.
-4. Migrasi: `php artisan migrate --force` (pakai flag `--prod` di script custom).
+4. Migrasi: `php artisan migrate --force`.
 5. Nginx: root ke `public/`, PHP-FPM socket, gzip, cache static assets (`public/build`).
 6. Queue worker: `php artisan queue:work --sleep=3 --tries=3` (supervisor/systemd).
 7. Scheduler: `* * * * * cd /path && php artisan schedule:run >> /dev/null 2>&1` (cron harian plan-expiry).
 8. HTTPS: Certbot (Let's Encrypt) + HSTS.
 9. Header keamanan: `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Resource-Policy`, `Origin-Agent-Cluster`, `X-Permitted-Cross-Domain-Policies`, `X-Robots-Tag` untuk area privat.
-
-> Detail lengkap: `DEPLOYMENT.md` (repo Next.js asli).
 
 ---
 
@@ -382,7 +383,7 @@ Target: **Vercel** (Next.js asli) / **VPS + Nginx + PHP-FPM** (Laravel).
 - **Rate Limit:** Login, generate, upload avatar/banner, laporan (5/jam), admin actions.
 - **Admin Guard:** Role `admin` dari DB (bukan token). Dua arah: user tidak bisa buka `/admin/*`, admin dibawa ke `/admin/*` padanan.
 - **Penonaktifan Akun:** Soft delete (`is_active=false`), sesi dicabut, data utuh, bisa dipulihkan.
-- **Headers:** `X-Powered-By` dihapus, CSP ketat, `productionBrowserSourceMaps: false`.
+- **Headers:** `X-Powered-By` dihapus, CSP ketat.
 
 ---
 
